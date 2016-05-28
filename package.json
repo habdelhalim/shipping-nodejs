@@ -9,6 +9,8 @@
   "author": "habdelhalim habdelhalim@souq.com",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "soap": "^0.15.0",
+    "xml2js": "^0.4.16"
   }
 }
