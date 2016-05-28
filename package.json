@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.4",
+    "mysql": "^2.10.2",
     "soap": "^0.15.0",
     "xml2js": "^0.4.16"
   }
