@@ -18,8 +18,7 @@ var track = function(req, res) {
     return
   }
 
-  var trackEvents = provider.track(req.params.awb)
-  res.json(trackEvents)
+  provider.track(req.params.awb, (events) => res.json(events))
 }
 
 module.exports = { track: track }
