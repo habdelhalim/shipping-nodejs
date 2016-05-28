@@ -6,20 +6,20 @@ var url = 'http://212.93.160.150/NaqelAPIDemo/XMLShippingService.asmx?wsdl'
 var request = function (awb) { return { 'ClientInfo': {}, 'WaybillNo' : awb  } }
 
 function TrackRequest(awb) {
-  this.ClientInfo = { 'ClientID': '9016975', 'Password': 'naqel1234567', 'Version' : '1.0'}
+  this.ClientInfo = { 'ClientID': '901', 'Password': 'naqe', 'Version' : '1.0'}
   this.WayBillNo = awb
 }
 
 function TrackShipment(awb, callback) {
   soap.createClient(url, function(err, client) {
 
-      client.TraceByWaybillNo(new TrackRequest(awb), function(err, result) {
-        var tracking = result.TraceByWaybillNoResult.Tracking 
+    client.TraceByWaybillNo(new TrackRequest(awb), function(err, result) {
+      var tracking = result.TraceByWaybillNoResult.Tracking 
         console.log(tracking)
         var events = tracking.map( tr => new TrackEvent(tr.Date, tr.ActivityCode, tr.Activity))
         callback(events)
-      });
-  });
+    })
+  })
 }
 
 module.exports = {
