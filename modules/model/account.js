@@ -20,4 +20,7 @@ function findAccount(id, callback) {
     db.query('select * from account where account_id = ?', [id], callback)
 }
 
-module.exports = {Account: Account, find: findAccount}
+module.exports = {
+    Account: Account,
+    find: findAccount
+}
