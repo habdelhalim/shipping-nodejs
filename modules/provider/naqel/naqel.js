@@ -16,15 +16,14 @@ function TrackShipment(awb, callback) {
 
         soap.createClient(url, function (err, client) {
             var request = {
-                ClientInfo: ClientInfo,
-                WayBillNo: awb
+                'ClientInfo': ClientInfo,
+                'WaybillNo': awb
             }
 
             client.TraceByWaybillNo(request, function (err, result) {
                 var events = []
                 if (result.TraceByWaybillNoResult != null) {
                     var tracking = result.TraceByWaybillNoResult.Tracking
-                    console.log(result);
                     events = tracking.map(
                         tr => new TrackEvent(
                             tr.Date, tr.ActivityCode, tr.Activity))
