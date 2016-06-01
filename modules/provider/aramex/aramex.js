@@ -1,28 +1,52 @@
 var soap = require('soap');
+var Account = require('../../model/account.js')
 var TrackEvent = require('../../model/track.js');
-var parseString = require('xml2js').parseString
 
 var url = 'https://ws.dev.aramex.net/shippingapi/tracking/service_1_0.svc?singleWsdl';
-var request = function (awb) {
+
+function fillClientInfo(account){
     return {
-        'ShipmentTrackingRequest': {
-            'Shipments': [awb]
-        }
+        'UserName': account.username,
+        'Password': account.password,
+        'Version': account.version,
+        'AccountNumber': account.account_no,
+        'AccountPin': account.pin,
+        'AccountEntity': account.entity,
+        'AccountCountryCode': account.country,
     }
 }
 
-function TrackShipment(awb, callback) {
-    soap.createClient(url, function (err, client) {
-        client.TrackShipments(request(awb), function (err, result) {
-            console.log(result)
-            parseString(result, (error, js) => console.log(error, js))
+function prepareRequest(account, awb){
+    return {
+            'ClientInfo': fillClientInfo(account), 
+            'Shipments': [{'string': awb}]
+    }
+}
 
-            var events = []
-            events.push(new TrackEvent())
-            console.log(events)
-            callback(events)
-        });
-    });
+function callTrack(client, request, callback) {
+    client.TrackShipments(request, function (err, result) {
+
+        var events = []
+        if (result.TrackingResults != null) {
+            var results = result.TrackingResults.KeyValueOfstringArrayOfTrackingResultmFAkxlpY
+            var tracking = results[0].Value.TrackingResult 
+            events = tracking.map(
+                tr => new TrackEvent(
+                    false, tr.UpdateDateTime, tr.UpdateCode, tr.UpdateDescription, tr.WaybillNumber))
+        }
+
+        callback(events)
+    })
+}
+
+function TrackShipment(awb, callback) {
+    Account.find(1, function (error, accounts) {
+        var account = accounts[0]
+        soap.createClient(url, function (err, client) {
+            var request = prepareRequest(account, awb)
+            callTrack(client, request, callback)
+        })
+    })
 }
 
 module.exports = {
