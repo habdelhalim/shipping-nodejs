@@ -1,5 +1,7 @@
-var ship = function (req, res) {
+var ship = function(req, res) {
     res.send('shipping service')
 }
 
-module.exports = {ship: ship}
+module.exports = {
+    ship: ship
+}

@@ -1,7 +1,7 @@
 var TrackEvent = require('../model/track.js')
 var Providers = require('../provider/providers.js')
 
-var track = function (req, res) {
+var track = function(req, res) {
     if (req.params.courier === undefined) {
         res.send('courier not found')
         return
@@ -18,8 +18,9 @@ var track = function (req, res) {
         return
     }
 
-    provider.trackAwb(req.params.awb, (events) => res.json(events)
-    )
+    provider.trackAwb(req.params.awb, (events) => res.json(events))
 }
 
-module.exports = {track: track}
+module.exports = {
+    track: track
+}

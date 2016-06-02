@@ -4,7 +4,7 @@ var TrackEvent = require('../../model/track.js');
 
 var url = 'http://212.93.160.150/NaqelAPIDemo/XMLShippingService.asmx?wsdl'
 
-function fillClientInfo(account){
+function fillClientInfo(account) {
     return {
         'ClientID': account.username,
         'Password': account.password,
@@ -12,7 +12,7 @@ function fillClientInfo(account){
     }
 }
 
-function prepareRequest(account, awb){
+function prepareRequest(account, awb) {
     var request = {
         'ClientInfo': fillClientInfo(account),
         'WaybillNo': awb
@@ -22,7 +22,7 @@ function prepareRequest(account, awb){
 }
 
 function callTrack(client, request, callback) {
-    client.TraceByWaybillNo(request, function (err, result) {
+    client.TraceByWaybillNo(request, function(err, result) {
         var events = []
         if (result.TraceByWaybillNoResult != null) {
             var tracking = result.TraceByWaybillNoResult.Tracking
@@ -36,9 +36,9 @@ function callTrack(client, request, callback) {
 }
 
 function TrackShipment(awb, callback) {
-    Account.find(2, function (error, accounts) {
+    Account.find(2, function(error, accounts) {
         var account = accounts[0]
-        soap.createClient(url, function (err, client) {
+        soap.createClient(url, function(err, client) {
             var request = prepareRequest(account, awb)
             callTrack(client, request, callback)
         })

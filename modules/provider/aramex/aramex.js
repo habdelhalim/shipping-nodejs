@@ -4,7 +4,7 @@ var TrackEvent = require('../../model/track.js');
 
 var url = 'https://ws.dev.aramex.net/shippingapi/tracking/service_1_0.svc?singleWsdl';
 
-function fillClientInfo(account){
+function fillClientInfo(account) {
     return {
         'UserName': account.username,
         'Password': account.password,
@@ -16,20 +16,22 @@ function fillClientInfo(account){
     }
 }
 
-function prepareRequest(account, awb){
+function prepareRequest(account, awb) {
     return {
-            'ClientInfo': fillClientInfo(account), 
-            'Shipments': [{'string': awb}]
+        'ClientInfo': fillClientInfo(account),
+        'Shipments': [{
+            'string': awb
+        }]
     }
 }
 
 function callTrack(client, request, callback) {
-    client.TrackShipments(request, function (err, result) {
+    client.TrackShipments(request, function(err, result) {
 
         var events = []
         if (result.TrackingResults != null) {
             var results = result.TrackingResults.KeyValueOfstringArrayOfTrackingResultmFAkxlpY
-            var tracking = results[0].Value.TrackingResult 
+            var tracking = results[0].Value.TrackingResult
             events = tracking.map(
                 tr => new TrackEvent(
                     false, tr.UpdateDateTime, tr.UpdateCode, tr.UpdateDescription, tr.WaybillNumber))
@@ -40,9 +42,9 @@ function callTrack(client, request, callback) {
 }
 
 function TrackShipment(awb, callback) {
-    Account.find(1, function (error, accounts) {
+    Account.find(1, function(error, accounts) {
         var account = accounts[0]
-        soap.createClient(url, function (err, client) {
+        soap.createClient(url, function(err, client) {
             var request = prepareRequest(account, awb)
             callTrack(client, request, callback)
         })
